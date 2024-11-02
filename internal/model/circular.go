@@ -6,9 +6,9 @@ import (
 	"github.com/golang-ds/linkedlist/circularly"
 )
 
-type Instruction string
+type Instruction interface{}
 
-type Circular = circularly.LinkedList[*Instruction]
+type Circular = circularly.LinkedList[Instruction]
 
 type Circulars []*Circular
 
@@ -17,7 +17,7 @@ func NewCirculars() Circulars {
 }
 
 func NewCircular() *Circular {
-	return tool.Ptr(circularly.New[*Instruction]())
+	return tool.Ptr(circularly.New[Instruction]())
 }
 
 func (c *Circulars) Enqueue(circular *Circular) {
