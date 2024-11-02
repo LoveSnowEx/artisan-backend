@@ -83,6 +83,9 @@ func InvertPoint(p *vector2.Vector2, c *Circle) *vector2.Vector2 {
 }
 
 func (c *canvas) Draw(g Geometry) {
+	if g == nil {
+		return
+	}
 	g.Draw(c.Context)
 }
 
