@@ -106,7 +106,7 @@ func (r *Ray) Draw(dst *gg.Context) {
 	// Draw the ray
 	clr := color.RGBA{255, 0, 255, 255} // Magenta color for the ray
 	dst.SetColor(clr)
-	rayEnd := r.Origin.Add(r.Direction.MulScalar(float64(dst.Height()) * float64(dst.Width())))
+	rayEnd := r.Origin.Add(r.Direction.MulScalar(float64(dst.Height()) + float64(dst.Width())))
 	dst.DrawLine(r.Origin.X, float64(dst.Height())-r.Origin.Y, rayEnd.X, float64(dst.Height())-rayEnd.Y)
 	dst.Stroke()
 }
@@ -244,7 +244,21 @@ func (a *Arc) Invert(c *Circle) Geometry {
 	}
 }
 
-func (c *Circle) Invert(_ *Circle) Geometry {
+func (c *Circle) Invert(oc *Circle) Geometry {
+	if math.Abs(c.Origin.Distance(oc.Origin)-c.Radius) < threshold {
+		direction := c.Origin.Sub(oc.Origin)
+		perpendicular := vector2.New(-direction.Y, direction.X)
+		return &InvertedLine{
+			Ray1: &Ray{
+				Origin:    c.Origin,
+				Direction: perpendicular,
+			},
+			Ray2: &Ray{
+				Origin:    c.Origin,
+				Direction: perpendicular.MulScalar(-1),
+			},
+		}
+	}
 	return c
 }
 
