@@ -6,8 +6,6 @@ import (
 	"github.com/golang-ds/linkedlist/circularly"
 )
 
-type Instruction interface{}
-
 type Circular = circularly.LinkedList[Instruction]
 
 type Circulars []*Circular
