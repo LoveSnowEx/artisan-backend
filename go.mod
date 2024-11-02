@@ -2,7 +2,11 @@ module artisan-backend
 
 go 1.22.1
 
-require github.com/gofiber/fiber/v3 v3.0.0-beta.3
+require (
+	github.com/gofiber/fiber/v3 v3.0.0-beta.3
+	github.com/golang-ds/linkedlist v1.0.0
+	github.com/golang-ds/queue v1.0.0
+)
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
