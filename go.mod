@@ -3,14 +3,16 @@ module artisan-backend
 go 1.22.1
 
 require (
+	github.com/deeean/go-vector v1.2.0
+	github.com/fogleman/gg v1.3.0
 	github.com/gofiber/fiber/v3 v3.0.0-beta.3
 	github.com/golang-ds/linkedlist v1.0.0
-	github.com/golang-ds/queue v1.0.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/gofiber/utils/v2 v2.0.0-beta.4 // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -18,5 +20,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.55.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
+	golang.org/x/image v0.21.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 )
