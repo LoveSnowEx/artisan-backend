@@ -8,6 +8,8 @@ import (
 	"github.com/fogleman/gg"
 )
 
+const threshold = 1e-9
+
 type Line struct {
 	Origin *vector2.Vector2
 	Target *vector2.Vector2
@@ -56,7 +58,7 @@ func Rotate(v *vector2.Vector2, angle float64) *vector2.Vector2 {
 }
 
 func Center(p1, p2 *vector2.Vector2) *vector2.Vector2 {
-	return vector2.New((p1.X+p2.X)/2, (p1.Y+p2.Y)/2)
+	return p1.Add(p2).DivScalar(2)
 }
 
 func InvertPoint(p *vector2.Vector2, c *Circle) *vector2.Vector2 {
@@ -64,7 +66,7 @@ func InvertPoint(p *vector2.Vector2, c *Circle) *vector2.Vector2 {
 	d := c.Origin.Distance(p)
 
 	// If point is at the origin of the inversion circle, return nil to avoid division by zero
-	if d < 1e-9 {
+	if d < threshold {
 		return nil
 	}
 
@@ -147,7 +149,7 @@ func (l *Line) Invert(c *Circle) Geometry {
 	targetToCenter := l.Target.Sub(c.Origin)
 	crossProduct := (originToCenter.X * targetToCenter.Y) - (originToCenter.Y * targetToCenter.X)
 
-	if math.Abs(crossProduct) < 1e-9 {
+	if math.Abs(crossProduct) < threshold {
 		// The points lie on a line through the origin, so inversion gives another line
 		return &Line{
 			Origin: invertedOrigin,
@@ -199,7 +201,7 @@ func (a *Arc) Invert(c *Circle) Geometry {
 		invertedPoint2 = InvertPoint(point2, c)
 	}
 
-	if math.Abs(distance-a.Radius) < 1e-9 {
+	if math.Abs(distance-a.Radius) < threshold {
 		angleCircle := math.Atan2(c.Origin.Y-a.Origin.Y, c.Origin.X-a.Origin.X)
 		var lowerBound, upperBound float64
 		if angle1 < angle2 {
