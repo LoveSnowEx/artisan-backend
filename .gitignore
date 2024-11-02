@@ -23,3 +23,12 @@ go.work.sum
 
 # env file
 .env
+
+# devenv and direnv
+
+.devenv/
+.direnv/
+
+# output of air
+
+tmp/
