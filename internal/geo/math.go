@@ -35,21 +35,21 @@ func IsAngleBetween(angle, a, b float64) bool {
 
 func InvertPoint(p *vector2.Vector2, c *Circle) *vector2.Vector2 {
 	// Calculate the distance from the circle origin to the point
-	d := c.Origin.Distance(p)
+	distance := c.Origin.Distance(p)
 
 	// If point is at the origin of the inversion circle, return nil to avoid division by zero
-	if d < threshold {
+	if distance < threshold {
 		return nil
 	}
 
-	// Inverted distance (R^2 / d)
-	invertedDistance := (c.Radius * c.Radius) / d
-
 	// Direction vector from circle origin to point p
-	direction := p.Sub(c.Origin).Normalize()
+	direction := p.Sub(c.Origin)
+
+	// Scalar to scale the direction vector
+	scalar := math.Pow(c.Radius, 2) / math.Pow(distance, 2)
 
 	// Scaled inverted point
-	invertedPoint := c.Origin.Add(direction.MulScalar(invertedDistance))
+	invertedPoint := c.Origin.Add(direction.MulScalar(scalar))
 
 	return invertedPoint
 }
