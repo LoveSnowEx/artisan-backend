@@ -73,8 +73,8 @@ func (a *Arc) Invert(c *Circle) Geometry {
 		InvertPoint(a.Origin.Add(direction.Normalize().MulScalar(a.Radius)), c),
 		InvertPoint(a.Origin.Add(direction.Normalize().MulScalar(-a.Radius)), c),
 	)
-	angle1 = math.Atan2(invertedPoint1.Y-centerPoint.Y, invertedPoint1.X-centerPoint.X)
-	angle2 = math.Atan2(invertedPoint2.Y-centerPoint.Y, invertedPoint2.X-centerPoint.X)
+	angle1 = Angle(invertedPoint1.Sub(centerPoint))
+	angle2 = Angle(invertedPoint2.Sub(centerPoint))
 
 	return &Arc{
 		Origin: centerPoint,

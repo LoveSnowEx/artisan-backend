@@ -82,8 +82,8 @@ func (l *Line) Invert(c *Circle) Geometry {
 	perpendicular := originToCenter.Sub(projection)
 
 	invertedPerpendicular := InvertPoint(perpendicular.Add(c.Origin), c)
-	angle1 := math.Atan2(invertedOrigin.Y-invertedPerpendicular.Y, invertedOrigin.X-invertedPerpendicular.X)
-	angle2 := math.Atan2(invertedTarget.Y-invertedPerpendicular.Y, invertedTarget.X-invertedPerpendicular.X)
+	angle1 := Angle(invertedOrigin.Sub(invertedPerpendicular))
+	angle2 := Angle(invertedTarget.Sub(invertedPerpendicular))
 	return &Arc{
 		Origin: Center(invertedPerpendicular, c.Origin),
 		Radius: invertedPerpendicular.Distance(c.Origin) / 2,
