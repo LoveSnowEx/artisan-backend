@@ -1,7 +1,7 @@
 package geo
 
 import (
-	"image/color"
+	"math"
 
 	"github.com/deeean/go-vector/vector2"
 	"github.com/fogleman/gg"
@@ -12,11 +12,17 @@ type Ray struct {
 	Direction *vector2.Vector2
 }
 
+func NewRay(origin, direction *vector2.Vector2) *Ray {
+	return &Ray{
+		Origin:    origin,
+		Direction: direction.Normalize(),
+	}
+}
+
 func (r *Ray) Draw(dst *gg.Context) {
-	// Draw the ray
-	clr := color.RGBA{255, 0, 255, 255} // Magenta color for the ray
-	dst.SetColor(clr)
-	rayEnd := r.Origin.Add(r.Direction.MulScalar(float64(dst.Height()) + float64(dst.Width())))
-	dst.DrawLine(r.Origin.X, float64(dst.Height())-r.Origin.Y, rayEnd.X, float64(dst.Height())-rayEnd.Y)
-	dst.Stroke()
+	line := &Line{
+		Origin: r.Origin,
+		Target: r.Origin.Add(r.Direction.MulScalar(math.Inf(1))),
+	}
+	line.Draw(dst)
 }

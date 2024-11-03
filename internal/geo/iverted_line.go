@@ -11,14 +11,8 @@ type InvertedLine struct {
 
 func (l *InvertedLine) Draw(dst *gg.Context) {
 	direction := l.Target.Sub(l.Origin)
-	ray1 := &Ray{
-		Origin:    l.Origin,
-		Direction: vector2.New(-direction.Y, direction.X),
-	}
-	ray2 := &Ray{
-		Origin:    l.Origin,
-		Direction: vector2.New(direction.Y, -direction.X),
-	}
+	ray1 := NewRay(l.Origin, vector2.New(-direction.Y, direction.X))
+	ray2 := NewRay(l.Origin, vector2.New(direction.Y, -direction.X))
 	ray1.Draw(dst)
 	ray2.Draw(dst)
 }
