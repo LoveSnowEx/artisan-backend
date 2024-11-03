@@ -17,6 +17,39 @@ func (l *Line) Draw(dst *gg.Context) {
 	// Draw the line
 	clr := color.RGBA{0, 0, 255, 255} // Blue color for the line
 	dst.SetColor(clr)
+	orgin := l.Origin
+	target := l.Target
+	direction := target.Sub(orgin)
+	// clamp the line to the canvas
+	if direction.X == 0 {
+		if orgin.Y < 0 {
+			orgin.Y = 0
+		} else if orgin.Y > float64(dst.Height()) {
+			orgin.Y = float64(dst.Height())
+		}
+		if target.Y < 0 {
+			target.Y = 0
+		} else if target.Y > float64(dst.Height()) {
+			target.Y = float64(dst.Height())
+		}
+	} else {
+		m := direction.Y / direction.X
+		b := orgin.Y - m*orgin.X
+		if orgin.X < 0 {
+			orgin.X = 0
+			orgin.Y = b
+		} else if orgin.X > float64(dst.Width()) {
+			orgin.X = float64(dst.Width())
+			orgin.Y = m*orgin.X + b
+		}
+		if target.X < 0 {
+			target.X = 0
+			target.Y = b
+		} else if target.X > float64(dst.Width()) {
+			target.X = float64(dst.Width())
+			target.Y = m*target.X + b
+		}
+	}
 	dst.DrawLine(l.Origin.X, float64(dst.Height())-l.Origin.Y, l.Target.X, float64(dst.Height())-l.Target.Y)
 	dst.Stroke()
 }

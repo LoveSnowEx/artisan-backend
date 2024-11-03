@@ -65,13 +65,9 @@ func (a *Arc) Invert(c *Circle) Geometry {
 		}
 		if lowerBound <= upperBound {
 			return &InvertedLine{
-				Ray1: &Ray{
-					Origin:    invertedPoint1,
-					Direction: invertedPoint1.Sub(invertedPoint2).Normalize(),
-				},
-				Ray2: &Ray{
-					Origin:    invertedPoint2,
-					Direction: invertedPoint2.Sub(invertedPoint1).Normalize(),
+				Line: Line{
+					Origin: invertedPoint1,
+					Target: invertedPoint2,
 				},
 			}
 		}

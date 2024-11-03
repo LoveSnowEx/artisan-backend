@@ -27,15 +27,9 @@ func (c *Circle) Invert(oc *Circle) Geometry {
 		invertedOrigin := InvertPoint(c.Origin, oc)
 		direction := c.Origin.Sub(oc.Origin)
 		perpendicular := vector2.New(-direction.Y, direction.X)
-		return &InvertedLine{
-			Ray1: &Ray{
-				Origin:    invertedOrigin,
-				Direction: perpendicular,
-			},
-			Ray2: &Ray{
-				Origin:    invertedOrigin,
-				Direction: perpendicular.MulScalar(-1),
-			},
+		return &Line{
+			Origin: invertedOrigin.Sub(perpendicular.MulScalar(math.Inf(1))),
+			Target: invertedOrigin.Add(perpendicular.MulScalar(math.Inf(1))),
 		}
 	}
 	return c
