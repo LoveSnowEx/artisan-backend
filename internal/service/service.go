@@ -2,6 +2,7 @@ package service
 
 import (
 	"artisan-backend/internal/geo"
+	"bytes"
 	"image"
 	"strconv"
 	"sync"
@@ -11,29 +12,39 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-const width, height = 1000, 1000
+const width, height = 1920, 1080
 
 var (
 	_               Service = (*service)(nil)
 	geometries              = make([]geo.Geometry, 0, 10000)
 	inverted                = false
 	currentPosition *geo.Ray
+
+	bufPool = sync.Pool{
+		New: func() interface{} {
+			return bytes.NewBuffer(nil)
+		},
+	}
 )
 
 type Service interface {
 }
 
 type service struct {
+	buf       *bytes.Buffer
 	canvas    *geo.Canvas
 	circulars Circulars
 	mu        *sync.Mutex
+	bufMu     *sync.Mutex
 }
 
 func New() *service {
 	srv := &service{
-		geo.NewCanvas(width, height),
-		NewCirculars(),
-		&sync.Mutex{},
+		buf:       bytes.NewBuffer(nil),
+		canvas:    geo.NewCanvas(width, height),
+		circulars: NewCirculars(),
+		mu:        &sync.Mutex{},
+		bufMu:     &sync.Mutex{},
 	}
 	srv.circulars.Enqueue(NewCircular())
 	currentPosition = geo.NewRay(
@@ -45,7 +56,8 @@ func New() *service {
 }
 
 func (s *service) Run() {
-	for {
+	t := time.NewTicker(1 * time.Millisecond)
+	for range t.C {
 		s.mu.Lock()
 		for _, c := range s.circulars {
 			inst, _ := c.First()
@@ -57,7 +69,6 @@ func (s *service) Run() {
 		}
 		s.mu.Unlock()
 		s.Draw()
-		time.Sleep(300 * time.Millisecond)
 	}
 }
 
@@ -75,7 +86,21 @@ func (s *service) Draw() {
 			s.canvas.Draw(g)
 		}
 	}
-	s.canvas.SavePNG("image.png")
+	s.canvas.Draw(circle)
+	oldBuf := s.buf
+	tmpBuf := bufPool.Get().(*bytes.Buffer)
+	s.canvas.EncodePNG(tmpBuf)
+	s.bufMu.Lock()
+	s.buf = tmpBuf
+	s.bufMu.Unlock()
+	go func() {
+		oldBuf.Reset()
+		bufPool.Put(oldBuf)
+	}()
+
+	// go func() {
+	// 	s.canvas.SavePNG("image.png")
+	// }()
 }
 
 func (s *service) Forward(ctx fiber.Ctx) error {
@@ -132,6 +157,9 @@ func (s *service) Circulars(ctx fiber.Ctx) error {
 }
 
 func (s *service) Img(ctx fiber.Ctx) error {
-	ctx.SendFile("image.png")
+	s.bufMu.Lock()
+	defer s.bufMu.Unlock()
+	ctx.Set(fiber.HeaderContentType, "image/png")
+	ctx.Write(s.buf.Bytes())
 	return ctx.SendStatus(fiber.StatusOK)
 }
