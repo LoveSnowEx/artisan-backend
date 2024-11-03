@@ -30,7 +30,7 @@ func IsAngleBetween(angle, a, b float64) bool {
 		lowerBound = math.Ceil((b - angle) / (2 * math.Pi))
 		upperBound = math.Floor((a - angle) / (2 * math.Pi))
 	}
-	return lowerBound < upperBound
+	return lowerBound <= upperBound
 }
 
 func InvertPoint(p *vector2.Vector2, c *Circle) *vector2.Vector2 {

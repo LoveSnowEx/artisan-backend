@@ -21,16 +21,16 @@ func (l *Line) Draw(dst *gg.Context) {
 	target := l.Target.Copy()
 	direction := target.Sub(origin)
 	// clamp the line to the canvas
-	if direction.X == 0 {
+	if direction.X < threshold {
 		if origin.Y < 0 {
 			origin.Y = 0
-		} else if origin.Y > float64(dst.Height()) {
-			origin.Y = float64(dst.Height())
+		} else if origin.Y > float64(dst.Height()-1) {
+			origin.Y = float64(dst.Height() - 1)
 		}
-		if target.Y < 0 {
+		if target.Y < threshold {
 			target.Y = 0
-		} else if target.Y > float64(dst.Height()) {
-			target.Y = float64(dst.Height())
+		} else if target.Y > float64(dst.Height()-1) {
+			target.Y = float64(dst.Height() - 1)
 		}
 	} else {
 		m := direction.Y / direction.X
@@ -38,19 +38,19 @@ func (l *Line) Draw(dst *gg.Context) {
 		if origin.X < 0 {
 			origin.X = 0
 			origin.Y = b
-		} else if origin.X > float64(dst.Width()) {
-			origin.X = float64(dst.Width())
+		} else if origin.X > float64(dst.Width()-1) {
+			origin.X = float64(dst.Width() - 1)
 			origin.Y = m*origin.X + b
 		}
 		if target.X < 0 {
 			target.X = 0
 			target.Y = b
-		} else if target.X > float64(dst.Width()) {
-			target.X = float64(dst.Width())
+		} else if target.X > float64(dst.Width()-1) {
+			target.X = float64(dst.Width() - 1)
 			target.Y = m*target.X + b
 		}
 	}
-	dst.DrawLine(origin.X, float64(dst.Height())-origin.Y, target.X, float64(dst.Height())-target.Y)
+	dst.DrawLine(origin.X, float64(dst.Height()-1)-origin.Y, target.X, float64(dst.Height()-1)-target.Y)
 	dst.Stroke()
 }
 
