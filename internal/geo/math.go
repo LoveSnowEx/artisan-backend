@@ -17,6 +17,22 @@ func Center(p1, p2 *vector2.Vector2) *vector2.Vector2 {
 	return p1.Add(p2).DivScalar(2)
 }
 
+func Angle(v *vector2.Vector2) float64 {
+	return math.Atan2(v.Y, v.X)
+}
+
+func IsAngleBetween(angle, a, b float64) bool {
+	var lowerBound, upperBound float64
+	if a < b {
+		lowerBound = math.Ceil((a - angle) / (2 * math.Pi))
+		upperBound = math.Floor((b - angle) / (2 * math.Pi))
+	} else {
+		lowerBound = math.Ceil((b - angle) / (2 * math.Pi))
+		upperBound = math.Floor((a - angle) / (2 * math.Pi))
+	}
+	return lowerBound < upperBound
+}
+
 func InvertPoint(p *vector2.Vector2, c *Circle) *vector2.Vector2 {
 	// Calculate the distance from the circle origin to the point
 	d := c.Origin.Distance(p)

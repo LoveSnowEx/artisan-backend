@@ -54,16 +54,8 @@ func (a *Arc) Invert(c *Circle) Geometry {
 	}
 
 	if math.Abs(distance-a.Radius) < threshold {
-		angleCircle := math.Atan2(c.Origin.Y-a.Origin.Y, c.Origin.X-a.Origin.X)
-		var lowerBound, upperBound float64
-		if angle1 < angle2 {
-			lowerBound = math.Ceil((angle1 - angleCircle) / (2 * math.Pi))
-			upperBound = math.Floor((angle2 - angleCircle) / (2 * math.Pi))
-		} else {
-			lowerBound = math.Ceil((angle2 - angleCircle) / (2 * math.Pi))
-			upperBound = math.Floor((angle1 - angleCircle) / (2 * math.Pi))
-		}
-		if lowerBound <= upperBound {
+		angleCircle := Angle(c.Origin.Sub(a.Origin))
+		if IsAngleBetween(angleCircle, angle1, angle2) {
 			return &InvertedLine{
 				Line: Line{
 					Origin: invertedPoint1,
