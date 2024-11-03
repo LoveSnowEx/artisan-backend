@@ -13,6 +13,13 @@ type Line struct {
 	Target *vector2.Vector2
 }
 
+func NewLine(origin, target *vector2.Vector2) *Line {
+	return &Line{
+		Origin: origin,
+		Target: target,
+	}
+}
+
 func (l *Line) Draw(dst *gg.Context) {
 	// Draw the line
 	clr := color.RGBA{0, 0, 255, 255} // Blue color for the line
