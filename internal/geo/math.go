@@ -49,6 +49,9 @@ func InvertPoint(p *vector2.Vector2, c *Circle) *vector2.Vector2 {
 	scalar := math.Pow(c.Radius, 2) / math.Pow(distance, 2)
 
 	// Scaled inverted point
+	if scalar < threshold {
+		return c.Origin
+	}
 	invertedPoint := c.Origin.Add(direction.MulScalar(scalar))
 
 	return invertedPoint
