@@ -18,11 +18,22 @@ func (l *InvertedLine) Draw(dst *gg.Context) {
 }
 
 func (l *InvertedLine) Invert(c *Circle) Geometry {
-	// invertedOrigin := InvertPoint(l.Origin, c)
-	// invertedTarget := InvertPoint(l.Target, c)
+	invertedOrigin := InvertPoint(l.Origin, c)
+	invertedTarget := InvertPoint(l.Target, c)
 
-	// angle1 := math.Atan2(invertedOrigin.Y-c.Origin.Y, invertedOrigin.X-c.Origin.X)
-	// angle2 := math.Atan2(invertedTarget.Y-c.Origin.Y, invertedTarget.X-c.Origin.X)
+	angle1 := Angle(invertedOrigin.Sub(c.Origin))
+	angle2 := Angle(invertedTarget.Sub(c.Origin))
+	angleCircle := Angle(c.Origin.Sub(invertedOrigin.Lerp(invertedTarget, 0.5)))
 
+	if IsAngleBetween(angleCircle, angle1, angle2) {
+		return &Arc{
+			Origin: c.Origin,
+			Radius: c.Radius,
+			Angle1: angle1,
+			Angle2: angle2,
+		}
+	}
+
+	// not implemented
 	return l
 }
